@@ -1,0 +1,58 @@
+#' Dichotomizd functional response regression (dfrr) model
+#'
+#' Implementing Function-on-Scalar Regression model, in which the response function
+#'  is dichotomized and observed sparsely.
+#'  This function fits the dichotomized functional response regression (dfrr) model as
+#'  \deqn{Y_{i}(t)=I(\beta_0(t)+\beta_1(t)*x_{1i}+\ldots+\beta_{q-1}(t)*x_{(q-1)i}+\varepsilon_{i}(t)+\epsilon_{i}(t)\times\sigma^2>0),}
+#'  where \eqn{I(.)} is the indicator function, \eqn{\varepsilon_{i}} is a Gaussian random function, and \eqn{\epsilon_{i}(t)} are iid standard normal for each \eqn{i} and \eqn{t} independent of \eqn{\varepsilon_{i}}.
+#'  \eqn{\beta_k} and \eqn{x_k} for \eqn{k=0,1,\ldots,q-1} are the functional regression coefficients and scalar covariates, respectively.
+#'
+#'   @details
+#' Implementing Function-on-Scalar Regression model in which the response
+#' function is dichotomized and observed sparsely.
+#' This package provides smooth estimations of
+#' functional regression coefficients and principal components for the
+#' dichotomized funtional response regression (dfrr) model.
+#' The main function in the dfrr-package is \link{dfrr}().
+#' @keywords FDA Dichotomized Functional Regression
+#'
+#' @aliases dfrr-package
+#' @examples
+#' set.seed(2000)
+#' \donttest{N<-50;M<-24}
+#' \dontshow{N<-30;M<-12}
+#' X<-rnorm(N,mean=0)
+#' time<-seq(0,1,length.out=M)
+#' Y<-simulate_simple_dfrr(beta0=function(t){cos(pi*t+pi)},
+#'                         beta1=function(t){2*t},
+#'                         X=X,time=time)
+#'
+#' #The argument T_E indicates the number of EM algorithm.
+#' #T_E is set to 1 for the demonstration purpose only.
+#' #Remove this argument for the purpose of converging the EM algorithm.
+#' dfrr_fit<-dfrr(Y~X,yind=time,T_E=1)
+#'
+#' coefs<-coef(dfrr_fit)
+#'   plot(coefs)
+#'
+#' fitteds<-fitted(dfrr_fit)
+#'   plot(fitteds)
+#'
+#' resids<-residuals(dfrr_fit)
+#'\donttest{plot(resids)}
+#'
+#' fpcs<-fpca(dfrr_fit)
+#' \donttest{plot(fpcs,plot.contour=TRUE,plot.3dsurface = TRUE)}
+#'
+#' newdata<-data.frame(X=c(1,0))
+#'   preds<-predict(dfrr_fit,newdata=newdata)
+#'   plot(preds)
+#'
+#'
+#' newdata<-data.frame(X=c(1,0))
+#' newydata<-data.frame(.obs=rep(1,5),.index=c(0.0,0.1,0.2,0.3,0.7),.value=c(1,1,1,0,0))
+#' preds<-predict(dfrr_fit,newdata=newdata,newydata = newydata)
+#' plot(preds)
+#'
+"_PACKAGE"
+
